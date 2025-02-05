@@ -14,6 +14,7 @@ const PORTFOLIO_ORIGINS: string[] = [
   'https://stage.portfolio.metamask.io',
   'https://ramps-dev.portfolio.metamask.io',
   'https://portfolio-builds.metafi-dev.codefi.network',
+  'http://localhost:3000',
   ///: END:ONLY_INCLUDE_IF
 ];
 
