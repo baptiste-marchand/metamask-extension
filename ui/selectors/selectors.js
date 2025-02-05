@@ -1482,7 +1482,8 @@ export const getAnySnapUpdateAvailable = createSelector(
 export const getHideSnapBranding = createDeepEqualSelector(
   [selectInstalledSnaps, selectSnapId],
   (installedSnaps, snapId) => {
-    return installedSnaps[snapId]?.hideSnapBranding;
+    return true;
+    // return installedSnaps[snapId]?.hideSnapBranding;
   },
 );
 
