@@ -151,9 +151,9 @@ class MetaMaskWallet {
     return this.#account ? [this.#account] : [];
   }
 
-  constructor(stream) {
+  constructor(/* stream */) {
     this.metaMaskSdk = new MetamaskMultichain({
-      existingStream: stream,
+      // existingStream: stream,
     });
   }
 
