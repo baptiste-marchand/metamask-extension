@@ -53,6 +53,7 @@ import {
   SOLANA_TESTNET_CHAIN,
 } from '@solana/wallet-standard-chains';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
+import { MetamaskMultichain } from '../sdk-multichain/MetamaskMultichain';
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -150,9 +151,11 @@ class MetaMaskWallet {
     return this.#account ? [this.#account] : [];
   }
 
-  /* constructor() {
-    this.metaMaskSdk = new MetaMaskSdk();
-  } */
+  constructor(stream) {
+    this.metaMaskSdk = new MetamaskMultichain({
+      existingStream: stream,
+    });
+  }
 
   #on = (event, listener) => {
     if (this.#listeners[event]) {
@@ -177,7 +180,9 @@ class MetaMaskWallet {
 
   #connect = async () => {
     if (!this.accounts.length) {
-      await this.metaMaskSdk.connect();
+      await this.metaMaskSdk.connect({
+        extensionId: '...', // TODO: replace with your ID
+      });
 
       const { address } = this.metaMaskSdk.accounts[0];
       const publicKey = new Uint8Array(Buffer.from(address, 'hex'));
@@ -230,7 +235,12 @@ async function registerMetaMaskWalletAdapter() {
     const detected = true; // await detectProvider();
 
     if (detected) {
-      registerWallet(new MetaMaskWallet());
+      const metamaskStream = new WindowPostMessageStream({
+        name: INPAGE,
+        target: CONTENT_SCRIPT,
+      });
+
+      registerWallet(new MetaMaskWallet(metamaskStream));
       registered = true;
     }
   } catch (error) {
