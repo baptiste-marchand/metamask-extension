@@ -122,7 +122,24 @@ export class MetamaskMultichain {
     this.logger?.log('[Caip25MultichainProvider] Connecting...', extensionId);
 
     try {
-      const res = this.provider.connect({ extensionId });
+      const res = await this.provider.connect({ extensionId });
+
+      this.provider.chromePort.onMessage.addListener((msg) => {
+        console.log(msg.data);
+      });
+
+      await this.provider.request({
+        method: 'wallet_createSession',
+        params: {
+          requiredScopes: {
+            'solana:1': {
+              methods: ['get_balance'],
+              notifications: [],
+            },
+          },
+          optionalScopes: {},
+        },
+      });
 
       this.logger?.log('res', res);
 
