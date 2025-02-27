@@ -233,6 +233,14 @@
   "addNfts": {
     "message": "Add NFTs"
   },
+  "addNonEvmAccount": {
+    "message": "Add $1 account",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
+  "addNonEvmAccountFromNetworkPicker": {
+    "message": "To enable the $1 network, you need to create a $1 account.",
+    "description": "$1 is the non EVM network where the account is going to be created, e.g. Bitcoin or Solana"
+  },
   "addRpcUrl": {
     "message": "Add RPC URL"
   },
@@ -747,6 +755,9 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
+  "bridgeEnterAmountAndSelectAccount": {
+    "message": "Enter amount and select destination account"
+  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -769,8 +780,14 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeSelectDestinationAccount": {
+    "message": "Select destination account"
+  },
   "bridgeSelectNetwork": {
     "message": "Select network"
+  },
+  "bridgeSelectTokenAmountAndAccount": {
+    "message": "Select token, amount and destination account"
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
@@ -1170,7 +1187,7 @@
     "message": "Connecting to Sepolia test network"
   },
   "connectionDescription": {
-    "message": "This site wants to"
+    "message": "Connect this website with MetaMask."
   },
   "connectionFailed": {
     "message": "Connection failed"
@@ -1491,6 +1508,15 @@
   "descriptionFromSnap": {
     "message": "Description from $1",
     "description": "$1 represents the name of the snap"
+  },
+  "destinationAccountPickerNoEligible": {
+    "message": "No eligible accounts found"
+  },
+  "destinationAccountPickerNoMatching": {
+    "message": "No matching accounts found"
+  },
+  "destinationAccountPickerSearchPlaceholder": {
+    "message": "Receiving address or SNS"
   },
   "details": {
     "message": "Details"
@@ -2134,6 +2160,9 @@
   "hideAccount": {
     "message": "Hide account"
   },
+  "hideAdvancedDetails": {
+    "message": "Hide advanced details"
+  },
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
   },
@@ -2214,6 +2243,9 @@
   },
   "holdToRevealUnlockedLabel": {
     "message": "hold to reveal circle unlocked"
+  },
+  "howNetworkFeesWorkExplanation": {
+    "message": "Estimated fee required to process the transaction. The max fee is $1."
   },
   "howQuotesWork": {
     "message": "How quotes work"
@@ -2773,6 +2805,15 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "You're adding this network to MetaMask and giving this site permission to use it."
   },
+  "multichainQuoteCardBridgingLabel": {
+    "message": "Bridging"
+  },
+  "multichainQuoteCardQuoteLabel": {
+    "message": "Quote"
+  },
+  "multichainQuoteCardTimeLabel": {
+    "message": "Time"
+  },
   "multipleSnapConnectionWarning": {
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
@@ -2892,9 +2933,6 @@
   },
   "networkFee": {
     "message": "Network fee"
-  },
-  "networkFees": {
-    "message": "Network fees"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
@@ -4457,9 +4495,6 @@
   "seedPhraseIntroTitle": {
     "message": "Secure your wallet"
   },
-  "seedPhraseIntroTitleCopy": {
-    "message": "Before getting started, watch this short video to learn about your Secret Recovery Phrase and how to keep your wallet safe."
-  },
   "seedPhraseReq": {
     "message": "Secret Recovery Phrases contain 12, 15, 18, 21, or 24 words"
   },
@@ -4471,6 +4506,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAccountToConnect": {
+    "message": "Select an account to connect"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
@@ -4591,6 +4629,9 @@
   },
   "showAccount": {
     "message": "Show account"
+  },
+  "showAdvancedDetails": {
+    "message": "Show advanced details"
   },
   "showExtensionInFullSizeView": {
     "message": "Show extension in full-size view"
@@ -4760,13 +4801,13 @@
     "message": "Cash out with MetaMask"
   },
   "slideDebitCardDescription": {
-    "message": "Available in selected regions"
+    "message": "Available in select regions"
   },
   "slideDebitCardTitle": {
     "message": "MetaMask debit card"
   },
   "slideFundWalletDescription": {
-    "message": "Get started by adding funds"
+    "message": "Add or transfer tokens to get started"
   },
   "slideFundWalletTitle": {
     "message": "Fund your wallet"
@@ -4976,15 +5017,6 @@
     "message": "Contact the creators of $1 for further support.",
     "description": "This is shown when the insight snap throws an error. $1 is the snap name"
   },
-  "solanaSupportSectionTitle": {
-    "message": "Solana"
-  },
-  "solanaSupportToggleDescription": {
-    "message": "Turning on this feature will give you the option to add a Solana Account to your MetaMask Extension derived from your existing Secret Recovery Phrase. This is an experimental Beta feature, so you should use it at your own risk."
-  },
-  "solanaSupportToggleTitle": {
-    "message": "Enable \"Add a new Solana account (Beta)\""
-  },
   "someNetworks": {
     "message": "$1 networks"
   },
@@ -5010,6 +5042,21 @@
   },
   "source": {
     "message": "Source"
+  },
+  "spamModalBlockedDescription": {
+    "message": "This site will be blocked for 1 minute."
+  },
+  "spamModalBlockedTitle": {
+    "message": "You've temporarily blocked this site"
+  },
+  "spamModalDescription": {
+    "message": "If you're being spammed with multiple requests, you can temporarily block the site."
+  },
+  "spamModalTemporaryBlockButton": {
+    "message": "Temporarily block this site"
+  },
+  "spamModalTitle": {
+    "message": "We've noticed multiple requests"
   },
   "speed": {
     "message": "Speed"
@@ -5231,8 +5278,8 @@
     "message": "Sudden market changes can cause failures. If the problem persists, please reach out to $1.",
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
-  "stxOptInDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet. $1"
+  "stxOptInEthereumBnbDescription": {
+    "message": "Turn on Smart Transactions for more reliable and secure transactions on Ethereum Mainnet and BNB Smart Chain. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -6148,6 +6195,9 @@
   "viewContact": {
     "message": "View contact"
   },
+  "viewDetails": {
+    "message": "View details"
+  },
   "viewMore": {
     "message": "View more"
   },
@@ -6177,6 +6227,18 @@
   },
   "visitSite": {
     "message": "Visit site"
+  },
+  "visitSupportDataConsentModalAccept": {
+    "message": "Confirm"
+  },
+  "visitSupportDataConsentModalDescription": {
+    "message": "Do you want to share your MetaMask Identifier and app version with our Support Center? This can help us better solve your problem, but is optional."
+  },
+  "visitSupportDataConsentModalReject": {
+    "message": "Don’t share"
+  },
+  "visitSupportDataConsentModalTitle": {
+    "message": "Share device details with support"
   },
   "visitWebSite": {
     "message": "Visit our website"

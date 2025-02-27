@@ -24,10 +24,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
-import {
-  getCurrentChainId,
-  getNetworkConfigurationsByChainId,
-} from '../../../../../shared/modules/selectors/networks';
 import Tooltip from '../../../ui/tooltip';
 import { LARGE_SYMBOL_LENGTH } from '../constants';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -43,11 +39,17 @@ import {
 import { TabName } from '../asset-picker-modal/asset-picker-modal-tabs';
 import { AssetPickerModalNetwork } from '../asset-picker-modal/asset-picker-modal-network';
 import {
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   GOERLI_DISPLAY_NAME,
   SEPOLIA_DISPLAY_NAME,
 } from '../../../../../shared/constants/network';
 import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
+import {
+  getMultichainCurrentChainId,
+  getMultichainCurrentNetwork,
+  getImageForChainId,
+  getMultichainNetworkConfigurationsByChainId,
+} from '../../../../selectors/multichain';
+import { useMultichainSelector } from '../../../../hooks/useMultichainSelector';
 
 const ELLIPSIFY_LENGTH = 13; // 6 (start) + 4 (end) + 3 (...)
 
@@ -127,12 +129,12 @@ export function AssetPicker({
       : symbol;
 
   // Badge details
-  const currentChainId = useSelector(getCurrentChainId);
-  const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const currentNetwork = allNetworks[currentChainId];
-  const selectedNetwork =
-    networkProps?.network ??
-    (currentNetwork?.chainId && allNetworks[currentNetwork.chainId]);
+  const currentChainId = useMultichainSelector(getMultichainCurrentChainId);
+  const allNetworks = useSelector(getMultichainNetworkConfigurationsByChainId);
+  const currentNetwork_ =
+    allNetworks[currentChainId as keyof typeof allNetworks];
+  const currentNetwork = useMultichainSelector(getMultichainCurrentNetwork);
+  const selectedNetwork = networkProps?.network ?? currentNetwork_;
 
   const allNetworksToUse = networkProps?.networks ?? Object.values(allNetworks);
   const { balanceByChainId } = useMultichainBalances();
@@ -163,11 +165,9 @@ export function AssetPicker({
     return undefined;
   };
 
-  const networkImageSrc =
-    selectedNetwork?.chainId &&
-    CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-      selectedNetwork.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-    ];
+  const networkImageSrc = selectedNetwork?.chainId
+    ? getImageForChainId(selectedNetwork.chainId)
+    : undefined;
 
   const handleButtonClick = () => {
     if (networkProps && !networkProps.network) {
