@@ -6421,7 +6421,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/solana-wallet-snap@npm:^1.5.0":
+"@metamask/solana-wallet-snap@npm:^1.7.0":
   version: 1.9.0
   resolution: "@metamask/solana-wallet-snap@npm:1.9.0"
   checksum: 10/f4163e9c931b2b7458afcb10e5c36970c2010b96901274c4b4da07ecf3ec3c9899358e3496f73c235b41eb96cb58fd58ddce7f8b056866625a71b004df6855db
@@ -27049,7 +27049,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^11.12.0"
     "@metamask/snaps-sdk": "npm:^6.18.0"
     "@metamask/snaps-utils": "npm:^9.0.0"
-    "@metamask/solana-wallet-snap": "npm:^1.5.0"
+    "@metamask/solana-wallet-snap": "npm:^1.7.0"
     "@metamask/test-bundler": "npm:^1.0.0"
     "@metamask/test-dapp": "npm:9.0.0"
     "@metamask/test-dapp-multichain": "npm:^0.6.0"
@@ -27139,9 +27139,9 @@ __metadata:
     "@types/yargs-parser": "npm:^21.0.3"
     "@typescript-eslint/eslint-plugin": "npm:^7.10.0"
     "@typescript-eslint/parser": "npm:^7.10.0"
+    "@viem/anvil": "npm:^0.0.10"
     "@wallet-standard/features": "npm:^1.1.0"
     "@wallet-standard/wallet": "npm:^1.1.0"
-    "@viem/anvil": "npm:^0.0.10"
     "@welldone-software/why-did-you-render": "npm:^8.0.3"
     "@whitespace/storybook-addon-html": "npm:^5.1.6"
     "@zxing/browser": "npm:^0.1.4"
