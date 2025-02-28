@@ -168,6 +168,7 @@ import {
   walletInvokeMethod,
 } from '@metamask/multichain';
 import { hexToBigInt, toCaipChainId } from '@metamask/utils';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
@@ -255,7 +256,6 @@ import {
   BridgeUserAction,
   BridgeBackgroundAction,
 } from '../../shared/types/bridge';
-import { isProduction } from '../../shared/modules/environment';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   handleMMITransactionUpdate,
