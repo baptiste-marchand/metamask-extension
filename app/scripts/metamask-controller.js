@@ -164,6 +164,7 @@ import {
   walletInvokeMethod,
 } from '@metamask/multichain';
 import { hexToBigInt, toCaipChainId } from '@metamask/utils';
+import { isProduction } from '../../shared/modules/environment';
 import {
   methodsRequiringNetworkSwitch,
   methodsThatCanSwitchNetworkWithoutApproval,
