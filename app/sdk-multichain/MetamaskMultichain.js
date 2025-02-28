@@ -1,10 +1,9 @@
 // packages/sdk-multichain/src/providers/MultichainProvider.ts
+import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { ExtensionProvider } from './ExtensionProvider';
 
-const DEFAULT_SESSION_ID = 'SINGLE_SESSION_ONLY';
-
 export class MetamaskMultichain {
-  sessions = new Map();
+  session;
 
   provider;
 
@@ -53,10 +52,7 @@ export class MetamaskMultichain {
     if (event === 'sessionChanged') {
       const sessionEventData = data;
       // Update the session data
-      this.sessions.set(
-        sessionEventData.session.sessionId,
-        sessionEventData.session,
-      );
+      this.session = sessionEventData.session;
       this.listeners.sessionChanged.forEach((listener) =>
         listener(sessionEventData),
       );
@@ -72,25 +68,26 @@ export class MetamaskMultichain {
         'sessionScopes' in data.params
       ) {
         const updatedSessionScope = data.params;
-        const session = this.sessions.get(DEFAULT_SESSION_ID);
 
         this.logger?.debug(
           '[MetamaskMultichain] wallet_sessionChanged received',
           {
-            sessionId: DEFAULT_SESSION_ID,
             updatedSessionScope,
           },
         );
 
-        if (session) {
-          session.sessionScopes = updatedSessionScope.sessionScopes;
-          session.sessionProperties = updatedSessionScope.sessionProperties;
-          session.expiry = updatedSessionScope.expiry;
-          session.sessionId = updatedSessionScope.sessionId;
-          session.scopedProperties = updatedSessionScope.scopedProperties;
+        if (this.session) {
+          this.session.sessionScopes = updatedSessionScope.sessionScopes;
+          this.session.sessionProperties =
+            updatedSessionScope.sessionProperties;
+          this.session.expiry = updatedSessionScope.expiry;
+          this.session.sessionId = updatedSessionScope.sessionId;
+          this.session.scopedProperties = updatedSessionScope.scopedProperties;
 
-          this.sessions.set(DEFAULT_SESSION_ID, session);
-          this.logger?.debug('[MetamaskMultichain] Updated session:', session);
+          this.logger?.debug(
+            '[MetamaskMultichain] Updated session:',
+            this.session,
+          );
 
           this.logger?.debug(
             `[MetamaskMultichain] Notifying sessionChanged listeners ${this.listeners.sessionChanged.size}`,
@@ -98,7 +95,7 @@ export class MetamaskMultichain {
           this.listeners.sessionChanged.forEach((listener) =>
             listener({
               type: 'updated',
-              session,
+              session: this.session,
             }),
           );
         }
@@ -122,28 +119,27 @@ export class MetamaskMultichain {
     this.logger?.log('[Caip25MultichainProvider] Connecting...', extensionId);
 
     try {
-      const res = await this.provider.connect({ extensionId });
+      await this.provider.connect({ extensionId });
 
       this.provider.chromePort.onMessage.addListener((msg) => {
         console.log(msg.data);
       });
 
-      await this.provider.request({
-        method: 'wallet_createSession',
-        params: {
-          requiredScopes: {
-            'solana:1': {
-              methods: ['get_balance'],
-              notifications: [],
-            },
+      const session = await this.createSession({
+        optionalScopes: {
+          [MultichainNetworks.SOLANA]: {
+            methods: ['getGenesisHash', 'signMessage'],
+            notifications: ['accountsChanged', 'chainChanged'],
+            accounts: [
+              `${MultichainNetworks.SOLANA}:6AwJL1LnMjwsB8GkJCPexEwznnhpiMV4DHv8QsRLtnNc`,
+            ],
           },
-          optionalScopes: {},
         },
       });
 
-      this.logger?.log('res', res);
-
-      return res;
+      return session.sessionScopes[MultichainNetworks.SOLANA].accounts.map(
+        (account) => account.slice(MultichainNetworks.SOLANA.length + 1),
+      );
     } catch (e) {
       this.logger?.log('Error in connect', e);
     } finally {
@@ -153,15 +149,18 @@ export class MetamaskMultichain {
     return true;
   }
 
-  disconnect() {
+  async disconnect() {
     this.logger?.debug('[Caip25MultichainProvider] Disconnecting...');
-    // Clear all sessions
-    this.sessions.clear();
+    // Revoke the session
+    await this.revokeSession();
+
     // Clear all listeners
     this.listeners.sessionChanged.clear();
     this.listeners.notification.clear();
     // Disconnect the provider
     this.provider.disconnect();
+
+    this.logger?.log('disconnected and revoked session');
   }
 
   async createSession({
@@ -219,16 +218,14 @@ export class MetamaskMultichain {
       result,
     );
 
-    const sessionId = result.sessionId ?? DEFAULT_SESSION_ID;
     const sessionRecord = {
-      sessionId: result.sessionId,
       sessionScopes: result.sessionScopes,
       scopedProperties: result.scopedProperties,
       sessionProperties: result.sessionProperties,
       expiry: result.sessionProperties?.expiry,
     };
 
-    this.sessions.set(sessionId, sessionRecord);
+    this.session = sessionRecord;
 
     this.notify('sessionChanged', {
       type: 'created',
@@ -238,25 +235,21 @@ export class MetamaskMultichain {
     return result;
   }
 
-  async revokeSession(params) {
-    const idToUse = params?.sessionId ?? DEFAULT_SESSION_ID;
-    const session = this.sessions.get(idToUse);
-    if (!session) {
-      this.logger?.debug(
-        '[Caip25MultichainProvider] No session found to revoke for:',
-        idToUse,
-      );
+  async revokeSession() {
+    const { session } = this;
+
+    if (!this.session) {
+      this.logger?.debug('[Caip25MultichainProvider] No session to revoke');
       return false;
     }
 
-    this.logger?.debug('[Caip25MultichainProvider] Revoking session:', idToUse);
+    this.logger?.debug('[Caip25MultichainProvider] Revoking session...');
 
     await this.provider.request({
       method: 'wallet_revokeSession',
-      params: [idToUse],
     });
 
-    this.sessions.delete(idToUse);
+    this.session = undefined;
     this.notify('sessionChanged', {
       type: 'revoked',
       session,
@@ -265,23 +258,17 @@ export class MetamaskMultichain {
     return true;
   }
 
-  async getSession(params) {
-    const idToUse = params?.sessionId ?? DEFAULT_SESSION_ID;
-    const session = this.sessions.get(idToUse);
-    if (!session) {
-      this.logger?.debug(
-        '[Caip25MultichainProvider] Session not found:',
-        idToUse,
-      );
+  async getSession() {
+    if (!this.session) {
+      this.logger?.debug('[Caip25MultichainProvider] No session set');
       // call wallet_getSession to get the session
       const result = await this.provider.request({
         method: 'wallet_getSession',
-        params: [idToUse],
       });
-      this.sessions.set(idToUse, result);
+      this.session = result;
       return result;
     }
-    return session;
+    return this.session;
   }
 
   async invokeMethod({ scope, request }) {
