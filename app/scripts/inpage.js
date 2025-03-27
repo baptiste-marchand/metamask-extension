@@ -36,7 +36,10 @@ import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
-import { registerSolanaWalletStandard } from './dist';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { getMultichainClient, getDefaultTransport } from '@metamask/multichain-api-client';
+import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
+///: END:ONLY_INCLUDE_IF
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
@@ -58,8 +61,11 @@ if (shouldInjectProvider()) {
     target: CONTENT_SCRIPT,
   });
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   // Should be called before initializeProvider
-  registerSolanaWalletStandard({});
+  const client = getMultichainClient({ transport: getDefaultTransport() })
+  registerSolanaWalletStandard({ client });
+  ///: END:ONLY_INCLUDE_IF
 
   console.log('initializeProvider: Starting');
   initializeProvider({
