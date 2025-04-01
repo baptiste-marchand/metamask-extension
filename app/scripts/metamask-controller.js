@@ -2416,7 +2416,17 @@ export default class MetamaskController extends EventEmitter {
     this.publicConfigStore = this.createPublicConfigStore();
 
     // Multiple MetaMask instances launched warning
-    this.extension.runtime.onMessageExternal.addListener(onMessageReceived);
+    this.extension.runtime.onMessageExternal.addListener(
+      (request, _, sendResponse) => {
+        onMessageReceived(request);
+        if (request?.message === 'ping') {
+          sendResponse({ message: 'pong' });
+          return true;
+        }
+        return false;
+      },
+    );
+
     // Fire a ping message to check if other extensions are running
     checkForMultipleVersionsRunning();
 
